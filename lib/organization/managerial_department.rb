@@ -36,9 +36,9 @@ class Organization::ManagerialDepartment
 		end
 	end
 
-	def inventory_of_men_t_shirts_or_women_scarfs
+	def inventory_of_less_funding_dept_of_given_colour(colour, funding)
 		@sub_departments.inject(0) do |sum, dept| 
-			sum + dept.inventory_of_men_t_shirts_or_women_scarfs
+			sum + dept.inventory_of_less_funding_dept_of_given_colour(colour, funding)
 		end
 	end
 

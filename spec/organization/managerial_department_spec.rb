@@ -136,48 +136,37 @@ describe Organization::ManagerialDepartment do
         expect(department.inventory_of_black_and_not_jeans_or_t_shirts).to eq(0)
       end
 
+      context "inventory of less funding dept of given colour" do
+        it "should return inventory as 40 if sub department colour is white and funding is less than given" do
+          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, cash: 200, categories: {"colour" => "white"} )
+          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 60, cash: 400, categories: {"colour" => "black"})
+          sub_department3 = FactoryGirl.build(:procurement_department, inventory: 100)
+          sub_department4 = FactoryGirl.build(:managerial_department, sub_departments: [sub_department2, sub_department3])
+          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department4])
 
-       context "Men t shirts or women scarfs" do
-        it "should return inventory as 0" do
-          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40)
-          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 20)
-          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department2])
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(0)
+          expect(department.inventory_of_less_funding_dept_of_given_colour("white", 300)).to eq(40)
         end
 
-        it "should return inventory of men clothes which are T shirts as 40 " do
-          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "t_shirt", "gender" => "men"})
-          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "shirt", "gender" => "women"})
-          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department2])
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(40)
-        end
+        it "should return inventory as 0 if funding is more than given funding for all sub departments" do
+          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, cash: 500, categories: {"colour" => "white"} )
+          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 60, cash: 400, categories: {"colour" => "black"})
+          sub_department3 = FactoryGirl.build(:procurement_department, inventory: 100)
+          sub_department4 = FactoryGirl.build(:managerial_department, sub_departments: [sub_department2, sub_department3])
+          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department4])
 
-        it "should return inventory of men clothes which are formal shirts as 0 " do
-          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "formal_shirt", "gender" => "men"})
-          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "formal_shirt", "gender" => "women"})
-          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department2])
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(0)
+          expect(department.inventory_of_less_funding_dept_of_given_colour("white", 300)).to eq(0)
         end
+        
+        it "should return inventory as 100 if funding is less than given funding and colours matches for two sub departments" do
+          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, cash: 100, categories: {"colour" => "white"} )
+          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 60, cash: 200, categories: {"colour" => "white"})
+          sub_department3 = FactoryGirl.build(:procurement_department, inventory: 100)
+          sub_department4 = FactoryGirl.build(:managerial_department, sub_departments: [sub_department2, sub_department3])
+          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department4])
 
-        it "should return inventory of women clothes which are scarfs as 40 " do
-          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "scarf", "gender" => "women"})
-          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "formal_shirt", "gender" => "women"})
-          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department2])
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(40)
-        end
-
-        it "should return inventory of women clothes which are not scarfs as 0 " do
-          sub_department1 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "shirt", "gender" => "women"})
-          sub_department2 = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "formal_shirt", "gender" => "men"})
-          department = FactoryGirl.build(:managerial_department, sub_departments: [sub_department1, sub_department2])
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(0)
+          expect(department.inventory_of_less_funding_dept_of_given_colour("white", 300)).to eq(100)
         end
       end
-
-
-
     end
-  end   
-
-
+  end
 end
