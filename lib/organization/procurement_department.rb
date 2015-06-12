@@ -25,8 +25,8 @@ class Organization::ProcurementDepartment
 	end
 
 
-def inventory_of_men_t_shirts_or_women_scarfs
-		if @categories && ( (@categories["gender"] == "men" && @categories["garment_subtype"] == "t_shirt") || (@categories["gender"] == "women" && @categories["garment_subtype"] == "scarf") )
+	def inventory_of_less_funding_dept_of_given_colour(colour, funding)
+		if @categories && @categories["colour"] == colour && @cash < funding
 			@inventory
 		else
 			0

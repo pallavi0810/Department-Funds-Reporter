@@ -55,30 +55,20 @@ describe Organization::ProcurementDepartment do
         expect(department.inventory_of_black_and_not_jeans_or_t_shirts).to eq(0)
       end
 
-      context "Men t shirts or women scarfs" do
-        it "should return inventory as 0" do
-          department = FactoryGirl.build(:procurement_department, inventory: 40)
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(0)
+      context "inventory of less funding dept of given colour" do
+        it "should return inventory as 0 if department colour is black and given colour is white" do
+          department = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"colour" => "black"})
+          expect(department.inventory_of_less_funding_dept_of_given_colour("white", 400)).to eq(0)
         end
 
-        it "should return inventory of men clothes which are T shirts as 40 " do
-          department = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "t_shirt", "gender" => "men"})
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(40)
+        it "should return inventory as 0 if funding is more than given funding" do
+          department = FactoryGirl.build(:procurement_department, inventory: 40, cash: 1000)
+          expect(department.inventory_of_less_funding_dept_of_given_colour("white", 400)).to eq(0)
         end
 
-        it "should return inventory of men clothes which are formal shirts as 0 " do
-          department = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "formal_shirt", "gender" => "men"})
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(0)
-        end
-
-        it "should return inventory of women clothes which are scarfs as 40 " do
-          department = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "scarf", "gender" => "women"})
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(40)
-        end
-
-        it "should return inventory of women clothes which are not scarfs as 0 " do
-          department = FactoryGirl.build(:procurement_department, inventory: 40, categories: {"garment_subtype" => "shirt", "gender" => "women"})
-          expect(department.inventory_of_men_t_shirts_or_women_scarfs).to eq(0)
+        it "should return inventory as 40 if funding is less than given funding and the colours match as per requirement" do
+          department = FactoryGirl.build(:procurement_department, inventory: 40, cash: 100, categories: {"colour" => "white"})
+          expect(department.inventory_of_less_funding_dept_of_given_colour("white", 400)).to eq(40)
         end
       end
     end
